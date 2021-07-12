@@ -1,5 +1,10 @@
 from copy import deepcopy
 from typing import Tuple, List
+    
+
+# ------------------------------------------------------------------------------------------
+# DEFINE CLASS
+
 
 class Grid:
     
@@ -21,17 +26,23 @@ class Grid:
     
     def placeTile(self, row: int, col: int, tile: int):
         self.matrix[row-1][col-1] = tile
-    
-    def utility(self) -> int:
+
+    def utility(self) -> int: # DataMinimaxII
         count = 0
-        sum = 0
+        max_value = 0
         for i in range(4):
             for j in range(4):
-                sum += self.matrix[i][j]
+                if self.matrix[i][j] > max_value:
+                    max_value = self.matrix[i][j]
                 if self.matrix[i][j] != 0:
                     count += 1
-        return int(sum/count)
-    
+        return int(max_value/count)
+
+
+# ------------------------------------------------------------------------------------------
+# POSIBILIDADES DE MOVIMINETO
+
+
     def canMoveUp(self) -> bool:
         for j in range(4):
             k = -1
@@ -84,6 +95,11 @@ class Grid:
                         return True
         return False
     
+
+# ------------------------------------------------------------------------------------------
+# OBTENER POSIBLES MOVIMIENTOS PARA MAX Y MIN
+
+
     def getAvailableMovesForMax(self) -> List[int]:
         moves = []
 
@@ -112,6 +128,11 @@ class Grid:
             return self.getAvailableMovesForMax()
         elif who == "min":
             return self.getAvailableMovesForMin()
+
+
+# ------------------------------------------------------------------------------------------
+# COMPROBAR SI SE HA TERMINADO EL JUEGO
+
     
     def isTerminal(self, who: str) -> bool:
         if who == "max":
@@ -133,6 +154,11 @@ class Grid:
     
     def isGameOver(self) -> bool:
         return self.isTerminal(who="max")
+
+
+# ------------------------------------------------------------------------------------------
+# EJECUTAR JUGADA EN LA MATRIZ (DIRECCION)
+
     
     def up(self):
         for j in range(4):
@@ -225,7 +251,7 @@ class Grid:
                 w -= 1
             for j in range(w+1):
                 self.matrix[i][j] = 0
-    
+
     def move(self, mv: int) -> None:
         if mv == 0:
             self.up()
@@ -235,6 +261,11 @@ class Grid:
             self.left()
         else:
             self.right()
+    
+
+# ------------------------------------------------------------------------------------------
+# OBTENER POSIBILIDADES ARBOL MINIMAX
+
     
     def getMoveTo(self, child: 'Grid') -> int:
         if self.canMoveUp():
