@@ -16,7 +16,7 @@ def printMatrix(self):
         for number in row:
             line += ' '*(6-len(str(number)))+str(number)
         print(line)
-    print('\nMove #{},  Current score = {}\n\n'.format(moves_count,scoreGrid(self)[0]))
+    print('\nMove #{},  Current score = {}\n\n'.format(record_count[len(record_count)-1],scoreGrid(self)[0]))
 
 def getGrid(self) -> Grid:
     list_zeros = scoreGrid(self)[2]
@@ -57,23 +57,42 @@ def scoreGrid(self) -> Grid:
 
 
 question = input('Do you want to start a new game?\n <y> <n>\n')
-if question == 'y':
-    datafile = open(path_file('DataManualPG'), "a")
-    moves_count = 0
-    matrix = [[0 for i in range(4)] for j in range(4)]
-    new_move = 5
-    grid = Grid(matrix)
-    getGrid(grid)
 
-elif question == 'n':
-    datafile = open(last_file()[0]+last_file()[1], "a") #open(str(last_file()[0]), "a")
-    moves_count = int(last_file()[2])-1
-    matrix = last_file()[3]
-    new_move = 5
-    grid = Grid(matrix)
-
+record_count = []
 record_grid = []
 record_move = []
+new_move = 0
+
+if question == 'y':
+    datafile = open(path_file('DataManualPG'), "a")
+    matrix = [[0 for i in range(4)] for j in range(4)]
+    record_count.append(1)
+    grid = Grid(matrix)
+    getGrid(grid)
+    getGrid(grid)
+    record_grid.append(scoreGrid(grid)[3])
+    printMatrix(grid)
+
+elif question == 'n':
+    print('\n{}\n'.format(last_file()[1]))
+    datafile = open(last_file()[0]+last_file()[1], "a")
+    record_count.append(int(last_file()[2])+1)
+    matrix = last_file()[3]
+    grid = Grid(matrix)
+
+    if last_file()[4][:-1] == 'UP':
+        grid.up()
+    elif last_file()[4][:-1] == 'DOWN':
+        grid.down()
+    elif last_file()[4][:-1] == 'LEFT':
+        grid.left()
+    else:
+        grid.right()
+    getGrid(grid)
+    record_grid.append(scoreGrid(grid)[3])
+
+    printMatrix(grid)
+
 
 key_print = {1: 'UP', 2: 'DOWN', 3: 'LEFT', 4: 'RIGHT'}
 
@@ -109,12 +128,12 @@ run = True
 while run:
 
     if new_move > 0:
-        moves_count += 1
-        getGrid(grid)
-        printMatrix(grid)
+        record_move.append(key_print[new_move])
 
-        if len(record_grid) > 19:
-            line = '{},'.format(moves_count-20)
+        if len(record_count) > 19:
+
+
+            line = '{},'.format(record_count[0])
 
             for row in record_grid[0]:
                 for number in row:
@@ -123,22 +142,25 @@ while run:
             line += record_move[0]
             datafile.write('{}\n'.format(line))
 
-            for i in range(len(record_grid)):
+            for i in range(len(record_count)):
                 if i < 19:
-                    record_grid[i] = record_grid[i + 1]
-                    if i < 18:
-                        record_move[i] = record_move[i + 1]
-                    else:
-                        record_move[i] = key_print[new_move]
-                else:
-                    record_grid[19] = scoreGrid(grid)[3]
+                    record_count[i] = record_count[i+1]
+                    record_grid[i] = record_grid[i+1]
+                    record_move[i] = record_move[i+1]
+
+            getGrid(grid)
+
+            record_count[19] = record_count[18]+1
+            record_grid[19] = scoreGrid(grid)[3]
+            record_move.pop()
 
         else:
+            getGrid(grid)
             record_grid.append(scoreGrid(grid)[3])
-            if new_move <5:
-                record_move.append(key_print[new_move])
-        new_move = 0
+            record_count.append(record_count[len(record_count)-1]+1)
 
+        new_move = 0
+        printMatrix(grid)
 
     # -------------------------------------------------------------------------------------------------
 
@@ -160,14 +182,14 @@ while run:
                 grid.right()
                 new_move = 4
             if event.key == pygame.K_b and len(record_grid)>0 :
-                moves_count -= 1
+                record_count.pop()
                 record_grid.pop()
                 record_move.pop()
                 grid = Grid(record_grid[len(record_grid)-1])
                 printMatrix(grid)
             if event.key == pygame.K_e:
                 for i in range(len(record_move)):
-                    line = '{},'.format(moves_count - 20 + i)
+                    line = '{},'.format(record_count[i])
                     for row in record_grid[i]:
                         for number in row:
                             line += str(number) + ','
