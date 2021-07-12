@@ -4,13 +4,14 @@ from Grid import Grid
 from GameDriver import GameDriver
 from Minimax import getBestMove
 from FileName import path_file
+import time
 
 gameDriver = GameDriver()
-datafile = open(path_file('DataMinimax'), "a")
+datafile = open(path_file('DataMinimaxIV'), "a")
 
 moves_str = ['UP', 'DOWN', 'LEFT', 'RIGHT']
 moves_count = 1
-blank = 8
+click_keep_going = 0
 
 while True:
     grid = gameDriver.getGrid()
@@ -18,10 +19,19 @@ while True:
         datafile.close()
         print("Unfortunately, I lost the game.")
         break
-    if blank < 5:
-        moveCode = getBestMove(grid, 10)
-    else:
-        moveCode = getBestMove(grid, 5)
+
+    if click_keep_going == 0:
+        for row in grid.matrix:
+            for number in row:
+                if number == 2048:
+                    time.sleep(2)
+                    try:
+                        gameDriver.keep_going()
+                        click_keep_going += 1
+                    except:
+                        continue
+
+    moveCode = getBestMove(grid, 5)
 
     print(f'Move #{moves_count}: {moves_str[moveCode]}')
     gameDriver.move(moveCode)
@@ -30,15 +40,11 @@ while True:
         moves_count += 1
         line = '{},'.format(moves_count)
 
-        blank = 0
         for row in grid.matrix:
             for number in row:
                 line += str(number) + ','
-                if number == 0:
-                    blank += 1
 
         line += moves_str[moveCode]
         datafile.write('{}\n'.format(line))
-
 
 
