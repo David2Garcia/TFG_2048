@@ -24,3 +24,24 @@ def path_file(name):
     datafile.close()
 
     return path_namefile
+
+def last_file():
+
+    name = 'DataManualPG'
+    path = '/Users/David/Desktop/TFG/Data2048/'
+    list_datafiles = os.listdir(path)
+    manual_datafiles = [file for file in list_datafiles if file.startswith(name)]
+
+    file_name = name + str(len(manual_datafiles)) + '.csv'
+    last_file = open(path+file_name, "r")
+
+    for i in last_file:
+        row = i
+
+    rl = row.split(',')
+
+    moves_count = rl[0]
+    matrix = [[int(rl[1]),int(rl[2]),int(rl[3]),int(rl[4])],[int(rl[5]),int(rl[6]),int(rl[7]),int(rl[8])],
+              [int(rl[9]),int(rl[10]),int(rl[11]),int(rl[12])],[int(rl[13]),int(rl[14]),int(rl[15]),int(rl[16])]]
+
+    return path, file_name, moves_count, matrix, rl[17]
