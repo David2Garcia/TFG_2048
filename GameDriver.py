@@ -38,3 +38,7 @@ class GameDriver:
     def move(self, moveCode):
         self.body.send_keys(self.moves[moveCode])
         time.sleep(0.1)
+
+    def keep_going(self):
+        button = self.driver.find_element_by_link_text('Keep going')
+        button.click()
