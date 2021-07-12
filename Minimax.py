@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from typing import Tuple, List
 from sys import maxsize as MAX_INT
 from Grid import Grid
