@@ -3,10 +3,15 @@ from selenium.webdriver.common.keys import Keys
 import time
 from Grid import Grid
 
+
+# ------------------------------------------------------------------------------------------
+# ACCESO A 2048 ORIGINAL
+
+
 class GameDriver:    
     def __init__(self):
-        self.url = 'https://hczhcz.github.io/2048/20ez/'
-        self.driver = webdriver.Chrome()
+        self.url = 'https://play2048.co'
+        self.driver = webdriver.Chrome('/Users/David/Desktop/TFG/chromedriver')
         self.driver.get(self.url)
         self.body = self.driver.find_element_by_tag_name('body')
         self.moves = {
