@@ -27,16 +27,16 @@ class Grid:
     def placeTile(self, row: int, col: int, tile: int):
         self.matrix[row-1][col-1] = tile
 
-    def utility(self) -> int: # DataMinimaxII
+    def utility(self) -> int: # DataMinimaxIII
+        points = {2:0,4:4,8:16,16:40,32:112,64:288,128:704,256:1664,512:3840,1024:8704,2048:19456,4096:43008,8192:94208,16384:204800,32768:441984,65536:948736,131072:2027006}
         count = 0
-        max_value = 0
+        value = 0
         for i in range(4):
             for j in range(4):
-                if self.matrix[i][j] > max_value:
-                    max_value = self.matrix[i][j]
                 if self.matrix[i][j] != 0:
+                    value += points[self.matrix[i][j]]
                     count += 1
-        return int(max_value/count)
+        return int(value/count)
 
 
 # ------------------------------------------------------------------------------------------
